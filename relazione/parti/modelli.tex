@@ -1,0 +1,103 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = rel_datamining.tex
+% !TEX spellcheck = it-IT
+
+\section{Modelli}
+
+Una volta sistemati i dati, sono stati provati vari modelli per vedere quale riesce ad effettuare le previsioni migliori.
+In particolare sono stati utilizzati:
+
+\begin{itemize}
+	\item Regressione logistica multiclasse
+	\item Alberi di classificazione
+	\item Random Forest
+	\item MARS
+	\item Reti Neurali
+	\item GAM
+	\item Bagging
+	\item Boosting
+\end{itemize}
+
+Per calcolare e confrontare i modelli, le 26000 osservazioni sono state suddivise in due insiemi, un insieme di validazione contenente il 20\% delle osservazioni e che viene utilizzato per confrontare gli errori commessi dai vari modelli e un altro set di dati composto dal restante 80\% delle osservazioni.
+Le osservazioni di quest'ultimo set sono poi state suddivise in altri due sottoinsiemi, il \textit{test set} contenete il 20\% e il \textit{train set} contenente le restanti osservazioni. 
+
+Con questa suddivisione è possibile utilizzare il \textit{train set} per calcolare il modello, provando più valori per gli eventuali iper-parametri, il \textit{test set} per confrontare quale configurazione di iper-parametri funziona meglio ed infine combinare i due set per calcolare la versione del modello da confrontare con gli altri modelli sui dati del \textit{validation set}.
+
+Infine, una volta trovata la configurazione ottimale di ogni modello, questo viene ricalcolato anche sulla totalità delle osservazioni per poi utilizzarlo per effettuare le previsioni sul dataset secondario in modo da poterle caricare su Kaggle, ottenendo così un'ulteriore metrica per la valutazione della bontà del modello. Non è precisato su che cosa si basa il punteggio attribuito da Kaggle, tuttavia minore è il valore attribuito, migliore è il modello e per entrare nella top 100 dei punteggi migliori è necessario scendere sotto lo $0.7236$.
+
+Per quanto riguarda le librerie contenenti le implementazioni dei vari modelli, si è cercato di utilizzare quelle viste a lezione, tuttavia non tutte queste librerie sono in grado di gestire la classificazione multiclasse e quindi è stato necessario cercare delle versioni alternative. Per i modelli GAM e Boosting, non sono state trovate librerie alternative, si è quindi proceduto ad utilizzare più modelli binomiali secondo la strategia \textit{one-vs-all}.
+
+
+\subsection{Regressione logistica multiclasse}
+
+Il primo modello utilizzato è stato quello che effettua la regressione logistica multiclasse. Tra le varie implementazioni della regressione logistica disponibili per R si è scelto di utilizzare \texttt{multinom} presente nel pacchetto \texttt{nnet} e che simula la regressione logistica utilizzando una rete neurale. \`E stata scelta questa particolare implementazione perché la funzione \texttt{glm} utilizzata in laboratorio funziona solo per la regressione binomiale e la funzione \texttt{mlogit} dell'omonimo pacchetto si è rilevata eccessivamente complessa.
+
+Il modello calcolato da \texttt{multinom} prevede, tra i vari iper-parametri, il valore di \texttt{decay} e confrontando l'effetto dei vari valori sul test set, si è trovato come valore migliore $0.001$, il quale è stato utilizzato per calcolare il modello di regressione sulla versione combinata del test e train set, producendo un errore sul test di classificazione pari a $0.3365762$, ovvero circa del $33.66\%$.
+
+Gli errori di classificazione sono riportati nella Tabella \ref{tab-reg}, dalla quale si può notare che la maggior parte degli errori commessi riguardano i trasferimenti che vengono classificati erroneamente come adozione. Un'altra cosa che si può notare è che nessuna degli animali viene classificato come deceduto per morte naturale e questo può essere causato dal fatto che nel dataset ci sono poche osservazioni che descrivono animali morti per cause naturali.
+
+\begin{table}[htbp]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{cc|c|c|c|c|c|}
+			\cline{3-7}
+			&  & \multicolumn{5}{c|}{Valori osservati} \\ \cline{3-7} 
+			&  & Adoption & Died & Euthanasia & Return to owner & Transfer \\ \hline
+			\multicolumn{1}{|c|}{\multirow{5}{*}{\begin{tabular}[c]{@{}c@{}}Valori\\ predetti\end{tabular}}} & Adoption & 1827 & 1 & 38 & 364 & 462 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Died & 0 & 0 & 0 & 0 & 0 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Euthanasia & 3 & 1 & 40 & 17 & 21 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Return to owner & 242 & 4 & 71 & 446 & 142 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Transfer & 120 & 36 & 173 & 104 & 1233 \\ \hline
+		\end{tabular}%
+	}
+	\caption{Errori di classificazione con il modello di regressione logistica.}
+	\label{tab-reg}
+\end{table}
+
+Per quanto riguardo il punteggio ottenuto su Kaggle, il modello calcolato su tutto il dataset principale ha ottenuto un punteggio di $0.89358$.
+
+\subsection{Alberi di classifcazione}
+
+Per calcolare l'albero di classificazione è stato utilizzato il modello disponibile nel pacchetto \texttt{tree}.
+
+L'albero è stato costruito utilizzando le osservazioni presenti nel train set, espandendolo fino ad ottenere una devianza interna alle foglie minore di $0.002$ (\texttt{mindev=0.002}). 
+Dopodiché sono stati usati i dati del test set per potare l'albero in modo da limitare l'overfitting, ottenendo come albero migliore quello con 21 foglie.
+
+L'albero così ottenuto ha ottenuto un errore di classificazione pari a $0.3543499$, ovvero leggermente peggiore rispetto alla regressione logistica,
+
+La Tabella \ref{tab-tree} riporta gli errori di classificazione commessi dal modello, per i quali valgono le stesse considerazioni fatte per la regressione logistica, alle quali si aggiunge il fatto che anche la classe \textit{Euthanasia} non viene mai assegnata.
+
+C'è però da tenere in considerazione che questo modello è stato calcolato senza utilizzare le variabili \texttt{PrimaryBreed} e \texttt{SecondaryBreed} perché con la funzione \texttt{tree} non è possibile usare variabili di tipo \texttt{Factor} con più di 32 livelli ed entrambe le variabili sforavano questo limite. Nonostante ciò il punteggio ottenuto su Kaggle è di $0.87657$, ovvero migliore rispetto a quello ottenuto dalla regressione logistica.
+
+\begin{table}[htbp]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{cc|c|c|c|c|c|}
+			\cline{3-7}
+			&  & \multicolumn{5}{c|}{Valori osservati} \\ \cline{3-7} 
+			&  & Adoption & Died & Euthanasia & Return to owner & Transfer \\ \hline
+			\multicolumn{1}{|c|}{\multirow{5}{*}{\begin{tabular}[c]{@{}c@{}}Valori\\ predetti\end{tabular}}} & Adoption & 1765 & 2 & 33 & 352 & 431 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Died & 0 & 0 & 0 & 0 & 0 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Euthanasia & 0 & 0 & 0 & 0 & 0 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Return to owner & 289 & 3 & 86 & 465 & 206 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Transfer & 138 & 37 & 203 & 114 & 1221 \\ \hline
+		\end{tabular}%
+	}
+	\caption{Errori di classificazione con l'albero di classificazione.}
+	\label{tab-reg}
+\end{table}
+
+\subsection{Random Forest}
+
+\subsection{Reti neurali}
+
+Come modello di una rete neurale è stato utilizzato quello disponibile nel pacchetto \texttt{nnet}, il quale permette di impostare alcuni iper-parametri come:
+
+\begin{itemize}
+	\item \texttt{MaxNWts}: massimo numero di pesi nella rete. Impostato a 10000 perché il valore di default è troppo basso rispetto al numero di variabili.
+	\item \texttt{maxit}: massimo numero di iterazioni nell'addestramento della rete. Impostato a 200 per motivi di tempo.
+	\item \texttt{decay}: fattore di decadimento dei pesi per l'algoritmo di addestramento. Impostato a $0.001668$, valore individuato utilizzando i dati del train e test set.
+	\item \texttt{size}: numero di nodi presenti nello strato nascosto della rete. Impostato a 10 dal momento che non c'è un modo sistematico per stabilire il numero ottimale ed effettuare l'ottimizzazione di questo iper-parametro richiede troppo tempo.
+\end{itemize}
+
