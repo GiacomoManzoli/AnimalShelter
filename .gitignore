@@ -1,2 +1,8 @@
 telekom.*
 lift-roc-tab.r
+*.aux
+*.toc
+*.out
+*.log
+*.loa
+*.synctex.gz
