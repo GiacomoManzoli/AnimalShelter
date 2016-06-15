@@ -23,15 +23,15 @@ Più nel dettaglio:
 	\item \texttt{DateTIme}: data e ora in cui l'animale ha lasciato il rifugio. \`{E} espressa nel formato \texttt{aaaa-mm-gg hh:mm:ss}.
 	\item \texttt{Outcome}: variabile risposta, ha 5 possibili valori:
 		\begin{itemize}
-			\item \textit{Adoption}
-			\item \textit{Died}
-			\item \textit{Euthanasia}
-			\item \textit{Return to owner}
-			\item \textit{Transfer}
+			\item \textit{Adoption}: 10769 osservazioni.
+			\item \textit{Died}: 197 osservazioni.
+			\item \textit{Euthanasia}: 1555 osservazioni.
+			\item \textit{Return to owner}: 4786 osservazioni.
+			\item \textit{Transfer}: 9422 osservazioni.
 		\end{itemize}
 	\item \texttt{OutcomeSubtype}: variabile che descrive perché l'animale ha fatto quella particolare fine. Ci sono 17 possibili valori per questa variabile e per 13612 non è disponibile. Questa variabile non è presente sul dataset secondario.
 	\item \texttt{AnimalType}: tipo dell'animale, può essere un cane o un gatto.
-	\item \texttt{SexuponOutcome}: sesso dell'animale, comprende anche l'informazione se l'animale è stato castrato o meno. In tutto ci sono 5 possibili valori per questa variabile.
+	\item \texttt{SexuponOutcome}: sesso dell'animale, comprende anche l'informazione se l'animale è stato castrato o meno. In tutto ci sono 6 possibili valori per questa variabile.
 	\item \texttt{AgeuponOutcome}: età dell'animale quando ha lasciato il rifugio, viene espressa utilizzando una stringa che descrive l'età, ad esempio: \textit{2 years, 1 week, ecc.}
 	\item \texttt{Breed}: razza dell'animale. Comprende anche l'informazione se l'animale è un incrocio di più razze e in qualche caso specifica anche la seconda razza. In tutto ci sono 1380 possibili valori.
 	\item \texttt{Color}: colore del pelo dell'animale. Comprende anche le informazioni relative al pelo e ad un eventuale colore secondario. In tutto ci sono 336 possibili valori.
@@ -61,20 +61,21 @@ Inoltre, andando a tracciare il grafico con le proporzioni delle varie classi in
 	\caption{Esito in base al tipo di animale}\label{fig-animals}
 \end{figure}
 
-
-
 \subsection{Software utilizzato}
 
-Nella realizzazione del progetto è stato utilizzato l'ambiente R in versione 3.2.4, esteso con alcune librerie come \texttt{ggplot2} e \texttt{dplyr} disponibili su CRAN.
+Nella realizzazione del progetto è stato utilizzato l'ambiente R in versione 3.2.4, esteso con alcune librerie:
 
+\begin{itemize}
+	\item \texttt{ggplot2}: per la rappresentazione dei grafici.
+	\item \texttt{dplyr}: per la manipolazione dei dati.
+	\item \texttt{nnet}: reti neurali e regressione logistica.
+	\item \texttt{GAM}: GAM.
+	\item \texttt{earth}: MARS.
+	\item \texttt{randomForest}: random forest.
+	\item \texttt{tree}: alberi di classificazione.
+	\item \texttt{ada}: Boosting.
+\end{itemize}
 
-%2. Albero di classificazione `library(tree)`
-%3. MARS `library(polspline)`
-%4. Neural Net `library(nnet)`
-%5. GAM `library(gam)`
-%6. Random Forest `library (randomForest)`
-%7. Bagging `library(ipred)`
-%8. Boosting `library(ada)`
+Tutte le librerie sono disponibili su CRAN mentre il codice del progetto è disponibile su GitHub all'indirizzo \url{https://github.com/GiacomoManzoli/AnimalShelter}.
 
-
-\todo{aggiornare le libreriie}
+\todo{aggiornare le librerie, manca quella del Bagging}

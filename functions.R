@@ -5,6 +5,13 @@ misc.table = function(valPredetti, valOsservati) {
     invisible(t) # ritorna il valore senza stamparlo
 }
 
+misc.conf.matrix = function(valPredetti, valOsservati) {
+    t = table(valOsservati,valPredetti) # Conta i valori automaticamente
+    err.tot <- 1-sum(diag(t))/sum(t)
+    cat("Errore totale: ", format(err.tot),"\n")
+    invisible(t) # ritorna il valore senza stamparlo
+}
+
 
 loadDataset = function(path) {
     dataset = read.csv(path)

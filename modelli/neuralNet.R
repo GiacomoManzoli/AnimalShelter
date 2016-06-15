@@ -2,7 +2,7 @@ library(nnet)
 if (!exists("test") || !exists("train") || !exists("validation")) {
     source("../load.R")
 }
-
+print("--- NeuralNetwork ---")
 f1 = as.formula(paste("OutcomeType ~", paste(names(train)[-c(1)], collapse="+"), collapse=NULL))
 
 # nn.model.train : modello calcolato solo sui dati di train per la scelta dei parametri
@@ -12,6 +12,7 @@ f1 = as.formula(paste("OutcomeType ~", paste(names(train)[-c(1)], collapse="+"),
 #nn.model.train = nnet(f1, data=train, MaxNWts = 10000, maxit = 200, trace = FALSE, size = 10)
 
 ## Già calcolato, commentato per non perderci la vita ad aspettare
+#print("Ottimizzo i parametri...")
 #decay = 10^(seq(-3, -1, length=10))
 #err = rep(0,10)
 #set.seed(123)
@@ -27,9 +28,11 @@ f1 = as.formula(paste("OutcomeType ~", paste(names(train)[-c(1)], collapse="+"),
 best.decay = 0.001668101 # calcolato precedentemente
 cat("Best decay: ", format(best.decay),"\n")
 
+print("Calcolo i modelli...")
 nn.model.comparsion = nnet(f1, data=rbind(train,test), MaxNWts = 10000, maxit = 1000, trace = FALSE, decay = best.decay, size=10)
 nn.model.full = nnet(f1, data=dataset, MaxNWts = 10000, maxit = 1000, trace = FALSE, decay = best.decay, size=10)
 
+print("Effettuo le predizioni...")
 # Predizione della classe sui valori di validazione per il confronto con gli altri modelli (errore di miscalssificazione)
 nn.predictions.comparsion.class = predict(nn.model.comparsion, validation, type="class")
 # Predizione delle probabilità per la sfida di kaggle (sul dataset separato)
@@ -38,4 +41,5 @@ nn.predictions.full.probs = predict(nn.model.full, kaggle.dataset, type="raw")
 nn.misc.table = misc.table(nn.predictions.comparsion.class, validation$OutcomeType)
 nn.misc.error = 1 - sum(diag(nn.misc.table))/sum(nn.misc.table)
 
+print("Scrivo le predizioni...")
 writePredictions(nn.predictions.full.probs, kaggle.dataset[,1], "previsioni/nn.csv")

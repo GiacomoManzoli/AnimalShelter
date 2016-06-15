@@ -5,41 +5,44 @@
 
 \section{Modelli}
 
-Una volta sistemati i dati, sono stati provati vari modelli per vedere quale riesce ad effettuare le previsioni migliori.
+Una volta trasformati i dati, sono stati provati vari modelli per vedere quale riesce ad effettuare le previsioni migliori.
 In particolare sono stati utilizzati:
 
 \begin{itemize}
 	\item Regressione logistica multiclasse
+	\item MARS
+	\item GAM
 	\item Alberi di classificazione
 	\item Random Forest
-	\item MARS
 	\item Reti Neurali
-	\item GAM
-	\item Bagging
 	\item Boosting
+	\item Bagging
 \end{itemize}
 
 Per calcolare e confrontare i modelli, le 26000 osservazioni sono state suddivise in due insiemi, un insieme di validazione contenente il 20\% delle osservazioni e che viene utilizzato per confrontare gli errori commessi dai vari modelli e un altro set di dati composto dal restante 80\% delle osservazioni.
+
 Le osservazioni di quest'ultimo set sono poi state suddivise in altri due sottoinsiemi, il \textit{test set} contenete il 20\% e il \textit{train set} contenente le restanti osservazioni. 
 
 Con questa suddivisione è possibile utilizzare il \textit{train set} per calcolare il modello, provando più valori per gli eventuali iper-parametri, il \textit{test set} per confrontare quale configurazione di iper-parametri funziona meglio ed infine combinare i due set per calcolare la versione del modello da confrontare con gli altri modelli sui dati del \textit{validation set}.
 
-Infine, una volta trovata la configurazione ottimale di ogni modello, questo viene ricalcolato anche sulla totalità delle osservazioni per poi utilizzarlo per effettuare le previsioni sul dataset secondario in modo da poterle caricare su Kaggle, ottenendo così un'ulteriore metrica per la valutazione della bontà del modello. Non è precisato su che cosa si basa il punteggio attribuito da Kaggle, tuttavia minore è il valore attribuito, migliore è il modello e per entrare nella top 100 dei punteggi migliori è necessario scendere sotto lo $0.7236$.
+Infine, una volta trovata la configurazione ottimale di ogni modello, questo viene ricalcolato anche sulla totalità delle osservazioni per poi essere utilizzato per effettuare le previsioni sul dataset secondario in modo da poterle caricare su Kaggle, ottenendo così un'ulteriore metrica per la valutazione della bontà del modello. 
 
-Per quanto riguarda le librerie contenenti le implementazioni dei vari modelli, si è cercato di utilizzare quelle viste a lezione, tuttavia non tutte queste librerie sono in grado di gestire la classificazione multiclasse e quindi è stato necessario cercare delle versioni alternative. Per i modelli GAM e Boosting, non sono state trovate librerie alternative, si è quindi proceduto ad utilizzare più modelli binomiali secondo la strategia \textit{one-vs-all}.
+Non è precisato su che cosa si basa il punteggio attribuito da Kaggle, tuttavia minore è il valore attribuito, migliore è il modello e per entrare nella top 100 dei punteggi migliori è necessario scendere sotto lo $0.7236$.
 
+Per quanto riguarda le librerie contenenti le implementazioni dei vari modelli, si è cercato di utilizzare quelle viste a lezione, tuttavia non tutte queste librerie sono in grado di gestire la classificazione multiclasse e quindi è stato necessario cercare delle versioni alternative. Per i modelli GAM e Boosting, non sono state trovate librerie alternative, sono stati quindi utilizzati più modelli binomiali, combinati secondo la strategia \textit{one-vs-all}.
 
 \subsection{Regressione logistica multiclasse}
 
-Il primo modello utilizzato è stato quello che effettua la regressione logistica multiclasse. Tra le varie implementazioni della regressione logistica disponibili per R si è scelto di utilizzare \texttt{multinom} presente nel pacchetto \texttt{nnet} e che simula la regressione logistica utilizzando una rete neurale. \`E stata scelta questa particolare implementazione perché la funzione \texttt{glm} utilizzata in laboratorio funziona solo per la regressione binomiale e la funzione \texttt{mlogit} dell'omonimo pacchetto si è rilevata eccessivamente complessa.
+Il primo modello utilizzato è stato quello che effettua la regressione logistica multiclasse. Tra le varie implementazioni della regressione logistica disponibili per R si è scelto di utilizzare \texttt{multinom} presente nel pacchetto \texttt{nnet}, la quale simula una regressione logistica utilizzando una rete neurale. 
 
-Il modello calcolato da \texttt{multinom} prevede, tra i vari iper-parametri, il valore di \texttt{decay} e confrontando l'effetto dei vari valori sul test set, si è trovato come valore migliore $0.001$, il quale è stato utilizzato per calcolare il modello di regressione sulla versione combinata del test e train set, producendo un errore sul test di classificazione pari a $0.3365762$, ovvero circa del $33.66\%$.
+\`E stata scelta questa particolare implementazione perché la funzione \texttt{glm} utilizzata in laboratorio funziona solo per la regressione binomiale e la funzione \texttt{mlogit} dell'omonimo pacchetto si è rilevata eccessivamente complessa.
 
-Gli errori di classificazione sono riportati nella Tabella \ref{tab-reg}, dalla quale si può notare che la maggior parte degli errori commessi riguardano i trasferimenti che vengono classificati erroneamente come adozione. Un'altra cosa che si può notare è che nessuna degli animali viene classificato come deceduto per morte naturale e questo può essere causato dal fatto che nel dataset ci sono poche osservazioni che descrivono animali morti per cause naturali.
+Il modello calcolato da \texttt{multinom} prevede, tra i vari iper-parametri, il valore di \texttt{decay} e confrontando l'effetto dei vari valori sul \textit{test set}, si è trovato come valore migliore $0.001$, il quale è stato utilizzato per calcolare il modello di regressione sulla versione combinata del \textit{test} e \textit{train set}, producendo un errore sul test di classificazione pari a $0.3365762$, ovvero circa del $33.66\%$.
+
+Gli errori di classificazione sono riportati nella Tabella \ref{tab-reg}, dalla quale si può notare che la maggior parte degli errori commessi riguardano i trasferimenti che vengono classificati erroneamente come adozione. Un'altra cosa che si può notare è che nessuno degli animali viene classificato come deceduto per morte naturale e questo può essere causato dal fatto che nel dataset ci sono poche osservazioni che descrivono animali morti per cause naturali.
 
 \begin{table}[htbp]
 	\centering
-	\resizebox{\textwidth}{!}{%
 		\begin{tabular}{cc|c|c|c|c|c|}
 			\cline{3-7}
 			&  & \multicolumn{5}{c|}{Valori osservati} \\ \cline{3-7} 
@@ -49,30 +52,233 @@ Gli errori di classificazione sono riportati nella Tabella \ref{tab-reg}, dalla 
 			\multicolumn{1}{|c|}{} & Euthanasia & 3 & 1 & 40 & 17 & 21 \\ \cline{2-7} 
 			\multicolumn{1}{|c|}{} & Return to owner & 242 & 4 & 71 & 446 & 142 \\ \cline{2-7} 
 			\multicolumn{1}{|c|}{} & Transfer & 120 & 36 & 173 & 104 & 1233 \\ \hline
+			\multicolumn{1}{l|}{}  & \multicolumn{1}{l|}{Errore classe (\%) } & 16.65& 100 & 87.57 & 52.09 & 33.63 \\ \cline{2-7}
 		\end{tabular}%
-	}
 	\caption{Errori di classificazione con il modello di regressione logistica.}
 	\label{tab-reg}
 \end{table}
 
 Per quanto riguardo il punteggio ottenuto su Kaggle, il modello calcolato su tutto il dataset principale ha ottenuto un punteggio di $0.89358$.
 
-\subsection{Alberi di classifcazione}
+\subsubsection{Regressione utilizzando \texttt{glm}}\label{sec-glm-glm}
+
+Per effettuare la regressione logistica utilizzando \texttt{glm} è stato necessario calcolare 5 modelli, uno per ogni possibile valore della variabile risposta, e combinare tra loro le probabilità ottenute in modo da ottenere la classe più probabile per una determinata osservazione.
+
+Con questo modello si è ottenuto un errore del $39.86\%$ e un punteggio su Kaggle di $0.87527$, anche se durante il calcolo del modello completo vengono sollevati dei warning rivelativi all'utilizzo di matrici con un rango troppo basso.
+
+La Tabella \ref{tab-glm-mat} riporta le matrici di confusione per i 5 modelli binomiali, mentre la Tabella \ref{tab-glm} riporta il resoconto degli errori di classificazione. Da entrambe le tabelle è possibile notare come questo modello classifichi erroneamente molte osservazioni con la classe \textit{Died}, mentre la versione del pacchetto \texttt{multinom} non classifica nessuna osservazione con questa classe.
+
+\begin{table}[htbp]
+	\centering
+	\subfloat[OutAdoption, errore: $0.217$]{%
+		\hspace{.5cm}%
+		\begin{tabular}{ll|l|l|}
+			\cline{3-4}
+			&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+			&     & No                & Yes              \\ \hline
+			\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 2512             & 641             \\ \cline{2-4} 
+			\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 522              & 1670             \\ \hline
+		\end{tabular}
+		\hspace{.5cm}%
+	}\hspace{1cm}
+	\subfloat[OutDied, errore: $0.108$]{%
+		\hspace{.5cm}%
+		\begin{tabular}{ll|l|l|}
+			\cline{3-4}
+			&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+			&     & No                & Yes              \\ \hline
+			\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 4766             & 537             \\ \cline{2-4} 
+			\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 40            & 2             \\ \hline
+		\end{tabular}
+		\hspace{.5cm}%
+	}\hspace{1cm}
+	\subfloat[OutEuthanasia, errore: $0.058$]{%
+		\hspace{.5cm}%
+		\begin{tabular}{ll|l|l|}
+			\cline{3-4}
+			&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+			&     & No                & Yes              \\ \hline
+			\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 5008             & 15             \\ \cline{2-4} 
+			\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 298              & 24            \\ \hline
+		\end{tabular}
+		\hspace{.5cm}%
+	}\hspace{1cm}
+	\subfloat[OutReturnToOwner, errore: $0.161$]{%
+		\hspace{.5cm}%
+		\begin{tabular}{ll|l|l|}
+			\cline{3-4}
+			&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+			&     & No                & Yes              \\ \hline
+			\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 4279             & 135             \\ \cline{2-4} 
+			\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 727              & 204             \\ \hline
+		\end{tabular}
+		\hspace{.5cm}%
+	}\hspace{1cm}
+	\subfloat[OutTransfer, errore: $0.196$]{%
+		\hspace{.5cm}%
+		\begin{tabular}{ll|l|l|}
+			\cline{3-4}
+			&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+			&     & No                & Yes              \\ \hline
+			\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 3175             & 312             \\ \cline{2-4} 
+			\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 738              & 1120             \\ \hline
+		\end{tabular}
+		\hspace{.5cm}%
+	}\hspace{1cm}
+	\caption{Matrici di confusione per i 5 classificatori con GLM}\label{tab-glm-mat}
+\end{table}
+
+\begin{table}[htbp]
+	\centering
+		\begin{tabular}{cc|c|c|c|c|c|}
+			\cline{3-7}
+			&  & \multicolumn{5}{c|}{Valori osservati} \\ \cline{3-7} 
+			&  & Adoption & Died & Euthanasia & Return to owner & Transfer \\ \hline
+			\multicolumn{1}{|c|}{\multirow{5}{*}{\begin{tabular}[c]{@{}c@{}}Valori\\ predetti\end{tabular}}} & Adoption & 1681 & 2 & 43 & 344 & 455 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Died & 238 & 2 & 29 & 124 & 120 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Euthanasia & 0 & 1 & 17 & 4 & 11 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Return to owner & 184 & 2 & 59 & 362 & 120 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Transfer & 89 & 35 & 174 & 97 & 1152 \\ \hline
+			\multicolumn{1}{l|}{}  & \multicolumn{1}{l|}{Errore classe (\%) } & 23.31& 95.23 & 94.72 & 61.11 & 37.66 \\ \cline{2-7}
+		\end{tabular}%
+	\caption{Errori di classificazione con GLM.}
+	\label{tab-glm}
+\end{table}
+
+\subsection{MARS}
+
+Come modello MARS è stato utilizzato quello disponibile nel pacchetto \texttt{earth} con la configurazione di default.
+
+Così facendo si è ottenuto un errore del $36.40\%$ e un punteggio su Kaggle di $0.9001$.
+
+Anche in questo caso, come si può notare dalla Tabella \ref{tab-mars}, il modello non ha classificato nessuna delle osservazioni come \textit{Died} o \textit{Euthanasia}.
+
+\begin{table}[htbp]
+	\centering
+
+		\begin{tabular}{cc|c|c|c|c|c|}
+			\cline{3-7}
+			&  & \multicolumn{5}{c|}{Valori osservati} \\ \cline{3-7} 
+			&  & Adoption & Died & Euthanasia & Return to owner & Transfer \\ \hline
+			\multicolumn{1}{|c|}{\multirow{5}{*}{\begin{tabular}[c]{@{}c@{}}Valori\\ predetti\end{tabular}}} & Adoption & 1994 & 2 & 61 & 599 & 566 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Died & 0 & 0 & 0 & 0 & 2 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Euthanasia & 0 & 0 & 0 & 0 & 0 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Return to owner & 99 & 2 & 48 & 187 & 74 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Transfer & 99 & 38 & 213 & 145 & 1218 \\ \hline
+			\multicolumn{1}{l|}{}  & \multicolumn{1}{l|}{Errore classe (\%) } & 9.03& 100 & 100 & 79.91 & 34.44 \\ \cline{2-7}
+		\end{tabular}%
+	
+	\caption{Errori di classificazione con MARS.}
+	\label{tab-mars}
+\end{table}
+
+\subsection{GAM}
+
+Il modello GAM è stato calcolato utilizzando la funzione \texttt{gam} dell'omonimo pacchetto e selezionando tutte le variabili a disposizione.
+
+Dal momento che GAM utilizza come predittore un modello lineare generalizzato e che non è stato possibile utilizzare le spline di lisciamento perché tutte le variabili sono qualitative, i risultati ottenuti con questo modello sono molto simili a quelli ottenuti con il modello lineare generalizzato riportato in §\ref{sec-glm-glm}.
+
+Sempre come per il modello della regressione logistica, non è stato possibile calcolare un unico modello, ma è stato necessario definire 5 modelli, uno per ogni possibile valore della variabile risposta, per poi classificare l'osservazione utilizzando la classe più probabile.
+
+Così facendo si è ottenuto un errore di classificazione del $34.03\%$ sul test di validazione e un punteggio di $0.87405$ su Kaggle.
+
+Gli errori di classificazione vengono riportati nelle tabelle \ref{tab-gam-matrix} e \ref{tab-gam}. 
+Dalla prima tabella è possibile osservare come il modello \texttt{OutDied} non classifichi nessuna osservazione come positiva, ottenendo comunque un errore molto basso a causa del numero limitato di osservazioni che compaiono nel training set che hanno quella determinata classe. 
+
+\begin{table}[htbp]
+	\centering
+	\subfloat[OutAdoption, errore: $0.217$]{%
+		\hspace{.5cm}%
+		\begin{tabular}{ll|l|l|}
+			\cline{3-4}
+			&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+			&     & No                & Yes              \\ \hline
+			\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 2512             & 641             \\ \cline{2-4} 
+			\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 522              & 1670             \\ \hline
+		\end{tabular}
+		\hspace{.5cm}%
+	}\hspace{1cm}
+	\subfloat[OutDied, errore: $0.007$]{%
+		\hspace{.5cm}%
+		\begin{tabular}{ll|l|l|}
+			\cline{3-4}
+			&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+			&     & No                & Yes              \\ \hline
+			\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 5303             & 0             \\ \cline{2-4} 
+			\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 42            & 0             \\ \hline
+		\end{tabular}
+		\hspace{.5cm}%
+	}\hspace{1cm}
+	\subfloat[OutEuthanasia, errore: $0.058$]{%
+		\hspace{.5cm}%
+		\begin{tabular}{ll|l|l|}
+			\cline{3-4}
+			&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+			&     & No                & Yes              \\ \hline
+			\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 5008             & 15             \\ \cline{2-4} 
+			\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 298              & 24            \\ \hline
+		\end{tabular}
+		\hspace{.5cm}%
+	}\hspace{1cm}
+	\subfloat[OutReturnToOwner, errore: $0.161$]{%
+		\hspace{.5cm}%
+		\begin{tabular}{ll|l|l|}
+			\cline{3-4}
+			&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+			&     & No                & Yes              \\ \hline
+			\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 4279             & 135             \\ \cline{2-4} 
+			\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 727              & 204             \\ \hline
+		\end{tabular}
+		\hspace{.5cm}%
+	}\hspace{1cm}
+	\subfloat[OutTransfer, errore: $0.196$]{%
+		\hspace{.5cm}%
+		\begin{tabular}{ll|l|l|}
+			\cline{3-4}
+			&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+			&     & No                & Yes              \\ \hline
+			\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 3175             & 312             \\ \cline{2-4} 
+			\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 738              & 1120             \\ \hline
+		\end{tabular}
+		\hspace{.5cm}%
+	}\hspace{1cm}
+	\caption{Matrici di confusione per i 5 classificatori con GAM}\label{tab-gam-matrix}
+\end{table}
+
+\begin{table}[htbp]
+	\centering
+		\begin{tabular}{cc|c|c|c|c|c|}
+			\cline{3-7}
+			&  & \multicolumn{5}{c|}{Valori osservati} \\ \cline{3-7} 
+			&  & Adoption & Died & Euthanasia & Return to owner & Transfer \\ \hline
+			\multicolumn{1}{|c|}{\multirow{5}{*}{\begin{tabular}[c]{@{}c@{}}Valori\\ predetti\end{tabular}}} & Adoption & 1878 & 2 & 49 & 394 & 493 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Died & 0 & 0 & 0 & 0 & 0 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Euthanasia & 1 & 1 & 17 & 4 & 11 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Return to owner & 213 & 2 & 67 & 415 & 138 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Transfer & 100 & 37 & 189 & 118 & 1216 \\ \hline
+			\multicolumn{1}{l|}{}  & \multicolumn{1}{l|}{Errore classe (\%) } & 14.32& 100 & 94.72 & 55.42 & 34.55 \\ \cline{2-7}
+		\end{tabular}%
+	\caption{Errori di classificazione con GAM.}
+	\label{tab-gam}
+\end{table}
+
+\subsection{Alberi di classificazione}
 
 Per calcolare l'albero di classificazione è stato utilizzato il modello disponibile nel pacchetto \texttt{tree}.
 
-L'albero è stato costruito utilizzando le osservazioni presenti nel train set, espandendolo fino ad ottenere una devianza interna alle foglie minore di $0.002$ (\texttt{mindev=0.002}). 
-Dopodiché sono stati usati i dati del test set per potare l'albero in modo da limitare l'overfitting, ottenendo come albero migliore quello con 21 foglie.
+L'albero è stato costruito utilizzando le osservazioni presenti nel \textit{train set}, espandendolo fino ad ottenere una devianza interna alle foglie minore di $0.002$ (\texttt{mindev=0.002}). 
+Dopodiché sono stati usati i dati del \textit{test set} per potare l'albero in modo da limitare l'overfitting, ottenendo come albero migliore quello con 21 foglie.
 
-L'albero così ottenuto ha ottenuto un errore di classificazione pari a $0.3543499$, ovvero leggermente peggiore rispetto alla regressione logistica,
+L'albero così prodotto ha ottenuto un errore di classificazione del $35.43\%$, ovvero leggermente peggiore rispetto alla regressione logistica,
 
 La Tabella \ref{tab-tree} riporta gli errori di classificazione commessi dal modello, per i quali valgono le stesse considerazioni fatte per la regressione logistica, alle quali si aggiunge il fatto che anche la classe \textit{Euthanasia} non viene mai assegnata.
+
+Questo fatto può essere osservato andando ad effettuare il \texttt{plot} dell'albero ottenuto, dal quale è possibile osservare come nessuna foglia dell'albero abbia etichetta \textit{Died} o \textit{Euthanasia}\footnote{Il plot dell'albero è stato omesso perché è troppo grande rispetto alle dimensioni del documento}.
 
 C'è però da tenere in considerazione che questo modello è stato calcolato senza utilizzare le variabili \texttt{PrimaryBreed} e \texttt{SecondaryBreed} perché con la funzione \texttt{tree} non è possibile usare variabili di tipo \texttt{Factor} con più di 32 livelli ed entrambe le variabili sforavano questo limite. Nonostante ciò il punteggio ottenuto su Kaggle è di $0.87657$, ovvero migliore rispetto a quello ottenuto dalla regressione logistica.
 
 \begin{table}[htbp]
 	\centering
-	\resizebox{\textwidth}{!}{%
 		\begin{tabular}{cc|c|c|c|c|c|}
 			\cline{3-7}
 			&  & \multicolumn{5}{c|}{Valori osservati} \\ \cline{3-7} 
@@ -82,13 +288,45 @@ C'è però da tenere in considerazione che questo modello è stato calcolato sen
 			\multicolumn{1}{|c|}{} & Euthanasia & 0 & 0 & 0 & 0 & 0 \\ \cline{2-7} 
 			\multicolumn{1}{|c|}{} & Return to owner & 289 & 3 & 86 & 465 & 206 \\ \cline{2-7} 
 			\multicolumn{1}{|c|}{} & Transfer & 138 & 37 & 203 & 114 & 1221 \\ \hline
+			\multicolumn{1}{l|}{}  & \multicolumn{1}{l|}{Errore classe (\%) } & 19.47& 100 & 100 & 52.05 & 34.28 \\ \cline{2-7}
 		\end{tabular}%
-	}
 	\caption{Errori di classificazione con l'albero di classificazione.}
-	\label{tab-reg}
+	\label{tab-tree}
 \end{table}
 
 \subsection{Random Forest}
+
+Un miglioramento al modello degli alberi di classificazione è dato dal modello delle random forest, le quali effettuano la classificazione combinando più alberi di dimensioni ridotte.
+
+Trattandosi di una combinazione di alberi di classificazione, anche questo modello soffre del problema relativo alle variabili \texttt{PrimaryBreed} e \texttt{SecondaryBreed}, le quali sono state scartate dal dataset.
+
+I parametri del modello che si sono rivelati essere migliori sono \text{mtry} uguale a 12 e \texttt{ntree} uguale a 600, ovvero la configurazione migliore della foresta ha 600 alberi di classificazione, addestrati su un set ridotti di osservazioni utilizzando tutte e 12 le variabili a disposizione. Infatti, il parametro \texttt{mtry} specifica il numero di variabili da scegliere a caso tra quelle disponibili quando viene estratto un campione per calcolare un singolo albero.
+Gli altri valori provati per \texttt{mtry} sono stati 5 e 10, ma hanno prodotto risultati peggiori.
+
+Con questa configurazione, il modello ha ottenuto un errore di classificazione del $18.63\%$ sul set di validazione, tuttavia il punteggio calcolato da Kaggle risulta essere $2.1834$.
+
+Come prima causa di questa discrepanza si è pensato all'\textit{overfitting} dei dati da parte della foresta. Tuttavia, le due metriche sono state calcolate su una porzione del dataset che non è stata utilizzata per calcolare il modello e quindi l'overfitting dovrebbe aver fatto aumentare anche l'errore di classificazione sul set di validazione.
+
+Un'altra possibile causa deriva dal fatto che Kaggle sembra penalizzare maggiormente le previsioni certe, ovvero quello che danno probabilità 1 ad una determinata classe e si è notato che il modello ha effettuato circa il $10\%$ di previsione certe per le classi \textit{Adoption} e \textit{Transfer}.
+
+\begin{table}[htbp]
+	\centering
+		\begin{tabular}{cc|c|c|c|c|c|}
+			\cline{3-7}
+			&  & \multicolumn{5}{c|}{Valori osservati} \\ \cline{3-7} 
+			&  & Adoption & Died & Euthanasia & Return to owner & Transfer \\ \hline
+			\multicolumn{1}{|c|}{\multirow{5}{*}{\begin{tabular}[c]{@{}c@{}}Valori\\ predetti\end{tabular}}} & Adoption & 1961 & 3 & 27 & 224 & 259 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Died & 0 & 29 & 0 & 0 & 2 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Euthanasia & 4 & 1 & 203 & 7 & 15 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Return to owner & 141 & 2 & 29 & 646 & 72 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Transfer & 86 & 7 & 63 & 54 & 1510 \\ \hline
+			\multicolumn{1}{l|}{}  & \multicolumn{1}{l|}{Errore classe (\%) } & 10.53& 30.95 & 36.95 & 30.61 & 18.72 \\ \cline{2-7}
+		\end{tabular}%
+	\caption{Errori di classificazione con random forest.}
+	\label{tab-forest}
+\end{table}
+
+
 
 \subsection{Reti neurali}
 
@@ -96,8 +334,121 @@ Come modello di una rete neurale è stato utilizzato quello disponibile nel pacc
 
 \begin{itemize}
 	\item \texttt{MaxNWts}: massimo numero di pesi nella rete. Impostato a 10000 perché il valore di default è troppo basso rispetto al numero di variabili.
-	\item \texttt{maxit}: massimo numero di iterazioni nell'addestramento della rete. Impostato a 200 per motivi di tempo.
-	\item \texttt{decay}: fattore di decadimento dei pesi per l'algoritmo di addestramento. Impostato a $0.001668$, valore individuato utilizzando i dati del train e test set.
+	\item \texttt{maxit}: massimo numero di iterazioni nell'addestramento della rete. Durante l'ottimizzazione dei parametri è stato mantenuto fissato a 200, mentre per i due modelli finali è stato portato a 1000.
+	\item \texttt{decay}: fattore di decadimento dei pesi per l'algoritmo di addestramento. Impostato a $0.001668$, valore individuato utilizzando i dati del \textit{train} e \textit{test set}.
 	\item \texttt{size}: numero di nodi presenti nello strato nascosto della rete. Impostato a 10 dal momento che non c'è un modo sistematico per stabilire il numero ottimale ed effettuare l'ottimizzazione di questo iper-parametro richiede troppo tempo.
 \end{itemize}
+
+La rete così ottenuta ha prodotto un errore di classificazione del $29,31\%$, senza mai prevedere la morte naturale per gli animali, e un punteggio di $0.93989$ su Kaggle.
+La Tabella \ref{tab-net} riporta più in dettaglio gli errori commessi dalla rete.
+
+\begin{table}[htbp]
+	\centering
+		\begin{tabular}{cc|c|c|c|c|c|}
+			\cline{3-7}
+			&  & \multicolumn{5}{c|}{Valori osservati} \\ \cline{3-7} 
+			&  & Adoption & Died & Euthanasia & Return to owner & Transfer \\ \hline
+			\multicolumn{1}{|c|}{\multirow{5}{*}{\begin{tabular}[c]{@{}c@{}}Valori\\ predetti\end{tabular}}} & Adoption & 1892 & 4 & 41 & 338 & 375 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Died & 0 & 0 & 0 & 0 & 0 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Euthanasia & 2 & 1 & 63 & 8 & 20 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Return to owner & 188 & 1 & 70 & 495 & 135 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Transfer & 110 & 36 & 148 & 90 & 1328 \\ \hline
+			\multicolumn{1}{l|}{}  & \multicolumn{1}{l|}{Errore classe (\%) } & 13.68& 100 & 80.43 & 46.83 & 28.52 \\ \cline{2-7}
+		\end{tabular}%
+	\caption{Errori di classificazione con la rete neurale.}
+	\label{tab-net}
+\end{table}
+
+\subsection{Boosting}
+
+Come modello di Boosting è stata utilizzata la versione di default della libreria \texttt{ada} e dal momento che con questo modello non è possibile effettuare la classificazione multiclasse, è stato necessario adottare la stessa strategia utilizzata per il GAM e per la regressione logistica.
+
+Sono stati quindi calcolati 5 modelli, uno per ogni possibile valore della variabile risposta e combinati tra loro per produrre la previsione finale. 
+
+Le matrici di confusione dei vari modelli sono riportate nella Tabella \ref{tab-boost-mat} mentre la Tabella \ref{tab-boost} contiene gli errori di classificazione.
+
+Dalla matrice di confusione del modello \texttt{OutDied} si può notare che, anche se non viene mai prevista la classe \textit{Died}, l'errore commesso è minimo e questo è causato dal fatto che nel dataset completo, le osservazioni con questa classe sono in netta minoranza rispetto le altre.
+
+L'errore totale commesso dal modello è del $32,61\%$ e il punteggio ottenuto su Kaggle è di $0.88321$.
+
+\begin{table}[htbp]
+\centering
+\subfloat[OutAdoption, errore: $0.215$]{%
+	\hspace{.5cm}%
+	\begin{tabular}{ll|l|l|}
+		\cline{3-4}
+		&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+		&     & No                & Yes              \\ \hline
+		\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 2494             & 659             \\ \cline{2-4} 
+		\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 495              & 1697             \\ \hline
+	\end{tabular}
+	\hspace{.5cm}%
+}\hspace{1cm}
+\subfloat[OutDied, errore: $0.007$]{%
+	\hspace{.5cm}%
+	\begin{tabular}{ll|l|l|}
+		\cline{3-4}
+		&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+		&     & No                & Yes              \\ \hline
+		\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 5303             & 0             \\ \cline{2-4} 
+		\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 42            & 0             \\ \hline
+	\end{tabular}
+	\hspace{.5cm}%
+}\hspace{1cm}
+\subfloat[OutEuthanasia, errore: $0.057$]{%
+	\hspace{.5cm}%
+	\begin{tabular}{ll|l|l|}
+		\cline{3-4}
+		&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+		&     & No                & Yes              \\ \hline
+		\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 5019             & 4             \\ \cline{2-4} 
+		\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 302              & 20             \\ \hline
+	\end{tabular}
+	\hspace{.5cm}%
+}\hspace{1cm}
+\subfloat[OutReturnToOwner, errore: $0.163$]{%
+	\hspace{.5cm}%
+	\begin{tabular}{ll|l|l|}
+		\cline{3-4}
+		&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+		&     & No                & Yes              \\ \hline
+		\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 4293             & 121             \\ \cline{2-4} 
+		\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 752              & 179             \\ \hline
+	\end{tabular}
+	\hspace{.5cm}%
+}\hspace{1cm}
+\subfloat[OutTransfer, errore: $0.192$]{%
+	\hspace{.5cm}%
+	\begin{tabular}{ll|l|l|}
+		\cline{3-4}
+		&     & \multicolumn{2}{l|}{Valori predetti} \\ \cline{3-4} 
+		&     & No                & Yes              \\ \hline
+		\multicolumn{1}{|l|}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}Valori\\ osservati\end{tabular}}} & No  & 3220             & 267             \\ \cline{2-4} 
+		\multicolumn{1}{|l|}{}                                                                                                                                 & Yes & 763              & 1095             \\ \hline
+	\end{tabular}
+	\hspace{.5cm}%
+}\hspace{1cm}
+\caption{Matrici di confusione per i 5 classificatori con Boosting}\label{tab-boost-mat}
+\end{table}
+
+\begin{table}[htbp]
+	\centering
+		\begin{tabular}{cc|c|c|c|c|c|}
+			\cline{3-7}
+			&  & \multicolumn{5}{c|}{Valori osservati} \\ \cline{3-7} 
+			&  & Adoption & Died & Euthanasia & Return to owner & Transfer \\ \hline
+			\multicolumn{1}{|c|}{\multirow{5}{*}{\begin{tabular}[c]{@{}c@{}}Valori\\ predetti\end{tabular}}} & Adoption & 1900 & 4 & 53 & 393 & 475 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Died & 0 & 0 & 0 & 0 & 0 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Euthanasia & 1 & 0 & 17 & 3 & 4 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Return to owner & 185 & 1 & 70 & 437 & 131 \\ \cline{2-7} 
+			\multicolumn{1}{|c|}{} & Transfer & 106 & 37 & 182 & 98 & 1248 \\ \hline
+			\multicolumn{1}{l|}{}  & \multicolumn{1}{l|}{Errore classe (\%) } & 13.32& 100 & 94.72 & 53.06 & 32.83 \\ \cline{2-7}
+		\end{tabular}%
+	\caption{Errori di classificazione con Boosting.}
+	\label{tab-boost}
+\end{table}
+
+\subsection{Bagging}
+
+
 

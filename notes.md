@@ -137,8 +137,10 @@ valPredetti       Adoption Died Euthanasia Return_to_owner Transfer
   Return_to_owner      188    1         70             495      135 = 889
   Transfer             110   36        148              90     1328 = 1712
 
+tot 5345
+
 > nn.misc.error
-[1] 0.6159027
+[1] 0.6159027 (0,293171188)
 
 Kaggle Score: 0.93989 (Posizione 538)
 
@@ -183,125 +185,54 @@ kaggle score:  2.18340
 Best type:  backward 
 Errore totale:  0.5867166 
 > mmars.misc.error
-[1] 0.5867166
+[1] 0.5867166  -- 0.3640785781
 > mmars.misc.table
                  valOsservati
 valPredetti       Adoption Died Euthanasia Return_to_owner Transfer
   Adoption            1994    2         61             599      566
   Return_to_owner       99    2         48             187       74
   Transfer              99   38        213             145     1218
+  
+KaggleScore1: 0.90010
 ```
 
 ## AdaBoost
 
 ```
-> boost.model.comparsion.1
-Call:
-ada(f1, data = trainAlt, iter = 50)
-
-Loss: exponential Method: discrete   Iteration: 50 
-
-Final Confusion Matrix for Data:
-          Final Prediction
-True value    No   Yes
-       No  12673  3287
-       Yes  2443  8326
-
-Train Error: 0.214 
-
-Out-Of-Bag Error:  0.219  iteration= 50 
-
-Additional Estimates of number of iterations:
-
-train.err1 train.kap1 
-        50         44 
-
-> boost.model.comparsion.2
-Call:
-ada(f2, data = trainAlt, iter = 50)
-
-Loss: exponential Method: discrete   Iteration: 50 
-
-Final Confusion Matrix for Data:
-          Final Prediction
-True value    No
-       No  26532
-       Yes   197
-
-Train Error: 0.007 
-
-Out-Of-Bag Error:  0.007  iteration= 6 
-
-Additional Estimates of number of iterations:
-
-train.err1 train.kap1 
-         1          1 
-
-> boost.model.comparsion.3
-Call:
-ada(f3, data = trainAlt, iter = 50)
-
-Loss: exponential Method: discrete   Iteration: 50 
-
-Final Confusion Matrix for Data:
-          Final Prediction
-True value    No   Yes
-       No  25142    32
-       Yes  1475    80
-
-Train Error: 0.056 
-
-Out-Of-Bag Error:  0.057  iteration= 46 
-
-Additional Estimates of number of iterations:
-
-train.err1 train.kap1 
-        49         49 
-
-> boost.model.comparsion.4
-Call:
-ada(f4, data = trainAlt, iter = 50)
-
-Loss: exponential Method: discrete   Iteration: 50 
-
-Final Confusion Matrix for Data:
-          Final Prediction
-True value    No   Yes
-       No  21428   515
-       Yes  3960   826
-
-Train Error: 0.167 
-
-Out-Of-Bag Error:  0.168  iteration= 44 
-
-Additional Estimates of number of iterations:
-
-train.err1 train.kap1 
-        41         41 
-
-> boost.model.comparsion.5
-Call:
-ada(f5, data = trainAlt, iter = 50)
-
-Loss: exponential Method: discrete   Iteration: 50 
-
-Final Confusion Matrix for Data:
-          Final Prediction
-True value    No   Yes
-       No  16031  1276
-       Yes  3976  5446
-
-Train Error: 0.196 
-
-Out-Of-Bag Error:  0.201  iteration= 48 #missclass error
-
-Additional Estimates of number of iterations:
-
-train.err1 train.kap1 
-        49         49 
+Errore totale:  0.2159027 
+Errore totale:  0.007857811 
+Errore totale:  0.05724977 
+Errore totale:  0.1633302 
+Errore totale:  0.1927035 
+Errore totale:  0.6140318 
+> mat1
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  2494  659
+       TRUE    495 1697
+> mat2
+            valPredetti
+valOsservati FALSE
+       FALSE  5303
+       TRUE     42
+> mat3
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  5019    4
+       TRUE    302   20
+> mat4
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  4293  121
+       TRUE    752  179
+> mat5
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  3220  267
+       TRUE    763 1095
 
 > boost.misc.error
-[1] 0.6130964
+[1] 0.---
 > boost.misc.table
                  valOsservati
 valPredetti       Adoption Died Euthanasia Return_to_owner Transfer
@@ -316,42 +247,105 @@ KaggleScore :  0.88321
 
 ## GAM normale
 ```
-> mgam.misc.table = misc.table(mgam.predictions.comparsion.class, validation$OutcomeType)
-Errore totale:  0.6138447 
-> mgam.misc.error = 1 - sum(diag(mgam.misc.table))/sum(mgam.misc.table)
-> mgam.misc.table
-                 valOsservati
+
+KaggleScore = 0.87405
+
+> mgam.misc.error
+[1] ---
+  
+                   valOsservati
 valPredetti       Adoption Died Euthanasia Return_to_owner Transfer
   Adoption            1878    2         49             394      493
   Euthanasia             1    1         17               4       11
   Return_to_owner      213    2         67             415      138
   Transfer             100   37        189             118     1216
   
+  
+matrici di confusione
 
+> mat1 = misc.conf.matrix(mgam.predictions.comparsion.probs.1 > 0.5, validation$OutcomeType=="Adoption")
+Errore totale:  0.2175865 
+> mat1
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  2512  641
+       TRUE    522 1670
+> mat2 = misc.conf.matrix(mgam.predictions.comparsion.probs.2 > 0.5, validation$OutcomeType=="Died")
+Errore totale:  0.007857811 
+> mat3 = misc.conf.matrix(mgam.predictions.comparsion.probs.3 > 0.5, validation$OutcomeType=="Euthanasia")
+Errore totale:  0.0585594 
+> mat4 = misc.conf.matrix(mgam.predictions.comparsion.probs.4 > 0.5, validation$OutcomeType=="Return_to_owner")
+Errore totale:  0.1612722 
+> mat5 = misc.conf.matrix(mgam.predictions.comparsion.probs.5 > 0.5, validation$OutcomeType=="Transfer")
+Errore totale:  0.1964453 
+> mat2
+            valPredetti
+valOsservati FALSE
+       FALSE  5303
+       TRUE     42
+> mat3
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  5008   15
+       TRUE    298   24
+> mat4
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  4279  135
+       TRUE    727  204
+> mat5
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  3175  312
+       TRUE    738 1120
+> 
 ```
 
-## GAM senza breed
-
-trovate le razze poco significative
-
-```
-> mgam.misc.table
-                 valOsservati
-valPredetti       Adoption Died Euthanasia Return_to_owner Transfer
-  Adoption            1824    1         44             396      489
-  Euthanasia             1    0         10               1        7
-  Return_to_owner      267    3         67             393      147
-  Transfer             100   38        201             141     1215
-> mgam.mist.error
-Errore: oggetto "mgam.mist.error" non trovato
-> mgam.misc.error
-[1] 0.6198316
-```
 
 Specificare che sarebbe più corretto fare la selezione stepwise, però che con la scusa che vengono addestrati più modelli risulta troppo onerosa perché dovrebbe essere fatta per ognuno dei modelli. 
 
+Non vengono usate le variabili relative alla razza perché alcuni valori non sono presenti nel 
+
+
+## GLM 2
+```
+> mat1
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  2512  641
+       TRUE    522 1670
+> mat2
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  4766  537
+       TRUE     40    2
+> mat3
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  5008   15
+       TRUE    298   24
+> mat4
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  4279  135
+       TRUE    727  204
+> mat5
+            valPredetti
+valOsservati FALSE TRUE
+       FALSE  3175  312
+       TRUE    738 1120
+> logit2.misc.table
+                 valOsservati
+valPredetti       Adoption Died Euthanasia Return_to_owner Transfer
+  Adoption            1681    2         43             344      455
+  Died                 238    2         29             124      120
+  Euthanasia             0    1         17               4       11
+  Return_to_owner      184    2         59             362      120
+  Transfer              89   35        174              97     1152
+> logit2.misc.error
+[1] 0.3986904
+```
 
 ## TODO:
 
-- aggiungere grafico dell'errore dell'albero di classificazione
 - Multiclass SVM?

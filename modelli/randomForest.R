@@ -3,6 +3,10 @@ if (!exists("test") || !exists("train") || !exists("validation")) {
     source("../load.R")
 }
 
+print("--- Random Forest ---")
+
+print("Adatto il dataset...")
+
 trainAlt = train[,-which(names(train) %in% c("PrimaryBreed", "SecondaryBreed"))]
 testAlt = test[,-which(names(test) %in% c("PrimaryBreed", "SecondaryBreed"))]
 validationAlt = validation[,-which(names(validation) %in% c("PrimaryBreed", "SecondaryBreed"))]
@@ -15,6 +19,7 @@ f1 = as.formula(paste("OutcomeType ~", paste(names(trainAlt)[-c(1)], collapse="+
 # forest.model.comparsion : modello calcolato sui dati di train+test per il confronto con gli altri modelli
 # forest.model.full : modello calcolato su tutto il dataset per la sfida di kaggle
 
+print("Ottimizzo i modelli...")
 # Già calcolato, commentato per non perderci la vita ad aspettare
 #mtry = c(5, 10, 12)
 #err = rep(0,3)
@@ -46,9 +51,11 @@ cat("Best mtry: ", format(best.mtry),"\n")
 best.ntree = 600
 cat("Best ntree: ", format(best.ntree),"\n")
 
+print("Calcolo i modelli finali....")
 forest.model.comparsion = randomForest(f1, data=rbind(train,test), mtry=best.mtry, ntree=best.ntree)
 forest.model.full = randomForest(f1, data=dataset, mtry=best.mtry, ntree=best.ntree)
 
+print("Effettuo le predizioni...")
 # Predizione della classe sui valori di validazione per il confronto con gli altri modelli (errore di miscalssificazione)
 forest.predictions.comparsion.class = predict(forest.model.comparsion, validation, type="response")
 # Predizione delle probabilità per la sfida di kaggle (sul dataset separato)
@@ -57,4 +64,5 @@ forest.predictions.full.probs = predict(forest.model.full, kaggle.dataset, type=
 forest.misc.table = misc.table(forest.predictions.comparsion.class, validation$OutcomeType)
 forest.misc.error = 1 - sum(diag(forest.misc.table))/sum(forest.misc.table)
 
+print("Scrivo le predizioni...")
 writePredictions(forest.predictions.full.probs, kaggle.dataset[,1], "previsioni/forest.csv")

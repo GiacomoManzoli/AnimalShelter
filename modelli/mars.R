@@ -2,7 +2,9 @@ library(earth) # https://cran.r-project.org/web/packages/earth/earth.pdf
 if (!exists("test") || !exists("train") || !exists("validation")) {
     source("../load.R")
 }
-# https://cran.r-project.org/web/packages/ada/ada.pdf
+
+print("--- MARS ---")
+
 f1 = as.formula(paste("OutcomeType ~", paste(names(train)[-c(1)], collapse="+"), collapse=NULL))
 
 
@@ -10,9 +12,8 @@ f1 = as.formula(paste("OutcomeType ~", paste(names(train)[-c(1)], collapse="+"),
 # mmars.model.comparsion : modello calcolato sui dati di train+test per il confronto con gli altri modelli
 # mmars.model.full : modello calcolato su tutto il dataset per la sfida di kaggle
 
-# mmars.model.train = earth(f1, data=train)
-
 #Già calcolato, commentato per non perderci la vita ad aspettare
+# print("Ottimizzazione...")
 #types = c("backward", "cv")
 #err = rep(0,2)
 #set.seed(123)
@@ -28,9 +29,11 @@ f1 = as.formula(paste("OutcomeType ~", paste(names(train)[-c(1)], collapse="+"),
 best.method = "backward" # calcolato precedentemente
 cat("Best type: ", format(best.method),"\n")
 
+print("Calcolo i modelli finali...")
 mmars.model.comparsion = earth(f1, data=rbind(train,test), pmethod=best.method)
 mmars.model.full = earth(f1, data=dataset, pmethod=best.method)
 
+print("Predizioni...")
 # Predizione della classe sui valori di validazione per il confronto con gli altri modelli (errore di miscalssificazione)
 mmars.predictions.comparsion.class = predict(mmars.model.comparsion, validation, type="class")
 # Predizione delle probabilità per la sfida di kaggle (sul dataset separato)
@@ -39,4 +42,5 @@ mmars.predictions.full.probs = predict(mmars.model.full, kaggle.dataset, type="r
 mmars.misc.table = misc.table(mmars.predictions.comparsion.class, validation$OutcomeType)
 mmars.misc.error = 1 - sum(diag(mmars.misc.table))/sum(mmars.misc.table)
 
+print("Scrivo i risultati...")
 writePredictions(mmars.predictions.full.probs, kaggle.dataset[,1], "previsioni/mmars.csv")

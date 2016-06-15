@@ -13,7 +13,7 @@ La variabile \texttt{Name} ha più di 6000 possibili valori distinti e, ragionan
 
 Il nome può quindi essere riassunto da una nuova variabile booleana \texttt{HasName} che specifica se l'animale ha un nome o meno.
 
-Tracciando il grafico (Figura \ref{fig-has-name}) per visualizzare la ripartizione delle varie classi per la variabile risposta in base al valore di \texttt{HasName} si ha che le osservazioni fatte sembrano essere confermate dai dati: indipendentemente dal tipo di animale, se questo ha un nome è più probabile che venga recuperato dal suo padrone.
+Tracciando il grafico (Figura \ref{fig-has-name}) per visualizzare la ripartizione delle varie classi per la variabile risposta in base al valore di \texttt{HasName} si ha che le osservazioni fatte sembrano essere confermate dai dati: indipendentemente dal tipo di animale, se questo ha un nome è più probabile che venga recuperato dal suo padrone. Inoltre, si può notare anche che per i gatti, la probabilità di essere adottati è molto più alta se hanno un nome.
 
 \begin{figure}[htbp]
 	\centering
@@ -25,7 +25,7 @@ Tracciando il grafico (Figura \ref{fig-has-name}) per visualizzare la ripartizio
 
 Difficilmente la data in cui l'animale ha lasciato la struttura può tornare utile per effettuare previsioni future. Si possono però estrarre altre informazioni come la fascia oraria e il giorno della settimana in cui l'animale ha lasciato la struttura. 
 
-Queste due informazioni possono tornare utili perché, ad esempio la gente nei weekend ha più tempo libero e quindi è più probabile che abbia tempo per andare ad adottare un cane, oppure che per motivi logistici i trasferimenti possono essere fatti solamente la mattina.
+Queste due informazioni possono tornare utili perché, ad esempio la gente nei week.end ha più tempo libero e quindi è più probabile che vada ad adottare un animale, oppure che per motivi logistici i trasferimenti possono essere fatti solamente la mattina.
 
 Per estrapolare ciò vengono definite due nuove variabili \texttt{DayOfWeek} che assume come valore il giorno della settimana e \texttt{TimeOfDay} che può assumere come valori:
 
@@ -44,7 +44,7 @@ Come si può notare dal grafico (Figura \ref{fig-time}) c'è un picco sulle adoz
 	\caption{Esito in base alla fascia oraria}\label{fig-time}
 \end{figure}
 
-Per quanto riguarda il giorno della settimana, dal grafico Figura \ref{fig-dow}, si può notare come le adozioni siano più probabili nei week-end.
+Per quanto riguarda il giorno della settimana, dal grafico Figura \ref{fig-dow}, si può notare come le adozioni siano leggermente più probabili nel week-end.
 
 \begin{figure}[htbp]
 	\centering
@@ -58,7 +58,7 @@ La variabile \texttt{SexuponOutcome} prevede 6 possibili livelli che racchiudo l
 
 Questa variabile è stata quindi scomposta in \texttt{Gender} che specifica il sesso dell'animale e \texttt{Status}, che specifica se l'animale è stato castrato o meno. Entrambe le variabili hanno un terzo possibile valore \textit{Unknown} che rappresenta i dati non disponibili.
 
-Dal grafico riportato in Fig \ref{fig-sesso-stato} si può notare che indipendentemente dal fatto che indipendentemente dal sesso e dal tipo di animale, se l'animale è stato castrato è più probabile che venga adottato, se invece non è stato castrato oppure non ci sono informazioni a riguardo, è più probabile che venga trasferito.
+Dal grafico riportato in Fig \ref{fig-sesso-stato} si può notare che indipendentemente dal sesso e dal tipo di animale, se l'animale è stato castrato è più probabile che venga adottato. Se invece non è stato castrato oppure non ci sono informazioni a riguardo, è più probabile che venga trasferito.
 
 \begin{figure}[htbp]
 	\centering
@@ -68,9 +68,9 @@ Dal grafico riportato in Fig \ref{fig-sesso-stato} si può notare che indipenden
 
 \subsection{L'età dell'animale}
 
-L'età dell'animale è memorizzata nella variabile \texttt{AgeuponOutcome} in un formato molto confusionale in quanto viene espressa come \textit{2 anni}, \textit{3 mesi}, ecc. Inoltre ci sono dei casi in cui alcuni valori non hanno la \textit{s} del plurale, ovvero tra i possibili valori della variabile ci sono ad esempio \textit{2 week} e \textit{2 weeks}, che quindi vengono considerati come valori distinti quando in realtà non lo sono.
+L'età dell'animale è memorizzata nella variabile \texttt{AgeuponOutcome} in un formato molto confusionale in quanto viene espressa come \textit{2 anni}, \textit{3 mesi}, ecc. Inoltre ci sono dei casi in cui alcuni valori non hanno la \textit{s} del plurale, ovvero tra i possibili valori della variabile ci sono ad esempio \textit{1 week} e \textit{1 weeks}, che quindi vengono considerati come valori distinti quando in realtà non lo sono.
 
-La prima modifica è quindi quella di normalizzare i valori, esprimendoli con un numero intero che approssima l'età dell'animale espressa in giorni, così facendo risulta più semplice classificare gli animali per fascia d'età. Infatti, si può assumere che un cucciolo è più probabile che venga adottato rispetto ad un animale più anziano, mentre gli animali troppo piccoli non possono essere adottati per legge.
+La prima modifica è quindi quella di normalizzare i valori, esprimendoli con un numero intero che approssima l'età dell'animale espressa in giorni. Così facendo risulta più semplice classificare gli animali per fascia d'età. Infatti, si può assumere che un cucciolo è più probabile che venga adottato rispetto ad un animale più anziano, mentre gli animali troppo piccoli non possono essere adottati per legge.
 
 Conviene quindi creare una nuova variabile \texttt{AgeCategory} con 5 possibili livelli:
 
@@ -79,15 +79,15 @@ Conviene quindi creare una nuova variabile \texttt{AgeCategory} con 5 possibili 
 	\item \textit{Cucciolo}: da 30 a 365 giorni.
 	\item \textit{Adulto}: da 366 a 3650 giorni (10 anni).
 	\item \textit{Anziano}: più di dieci anni.
-	\item \text{Sconosciuta}.
+	\item \textit{Sconosciuta}.
 \end{itemize}
 
-Nella normalizzazione dei valori si è scelto di mantenere le 18 osservazioni con i valori mancati per l'età, marcandoli come sconosciuti, questo perché nel secondo dataset sono presenti delle osservazioni per le quali l'eta non è nota. Inoltre si può ipotizzare che questi animali siano randagi e quindi che per questo motivo la loro eta non è nota.
+Nella normalizzazione dei valori si è scelto di mantenere le 18 osservazioni con i valori mancati per l'età, marcandoli come sconosciuti, questo perché nel secondo dataset sono presenti delle osservazioni per le quali l'eta non è nota. Inoltre, si può ipotizzare che questi animali siano randagi e quindi che per questo motivo la loro eta non è nota.
 Questa ipotesi deriva dal fatto che tra i possibili valori della variabile \texttt{OutcomeSubtype} c'è il valore \textit{SCRP} che indica un trasferimento relativo al programma di recupero dei gatti randagi\footnote{\url{http://www.maddiesfund.org/austin-animal-services-stray-cat-return-program.htm}} e quasi tutte le osservazioni con l'età mancante hanno proprio quel valore come \texttt{OutcomeSubtype}.
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.7\textwidth]{./grafici/esito_eta.pdf}
+	\includegraphics[width=0.9\textwidth]{./grafici/esito_eta.pdf}
 	\caption{Esito in base alla fascia d'età dell'animale}\label{fig-eta}
 \end{figure}
 
@@ -97,7 +97,7 @@ Come si può notare dal grafico Figura \ref{fig-eta}, nessuno degli animali neon
 
 Le informazioni relative alla razza dell'animale sono racchiuse nella variabile \texttt{Breed}, la quale ha 1340 possibili valori e specifica anche se l'animale è un incrocio o meno.
 
-Osservando alcuni dei possibili valori, si può notare che se l'animale non è di razza,, il valore della variabile comprende o due razze oppure la razza principale, seguita da \textit{Mix}. Si è scelto quindi di scomporre la variabile \texttt{Breed} nelle variabili \texttt{PrimaryBreed} (220 livelli), \texttt{SecondaryBreed} (144 livelli) e \texttt{IsMix} (booleana).
+Osservando alcuni dei possibili valori, si può notare che se l'animale non è di razza, il valore della variabile comprende o due razze oppure la razza principale, seguita da \textit{Mix}. Si è scelto quindi di scomporre la variabile \texttt{Breed} nelle variabili \texttt{PrimaryBreed} (220 livelli), \texttt{SecondaryBreed} (144 livelli) e \texttt{IsMix} (booleana).
 
 Ci sarebbero ulteriori informazioni che possono essere estratte da questa variabile, come la stazza dell'animale, la quale a sua volta va ad influire sull'aspettativa di vita e quindi sulla corretta classificazione della fascia d'età e sul carattere dell'animale. Tuttavia per estrarre queste informazioni in modo corretto è necessaria un'elevata conoscenza del dominio, ci si è quindi limitati alla scomposizione della variabile \texttt{Breed}.
 
@@ -108,7 +108,7 @@ Ci sarebbero ulteriori informazioni che possono essere estratte da questa variab
 \end{figure}
 
 
-Come si può notare dal grafico Fig \ref{fig-mix}, un cane di razza ha più probabilità di essere adottato rispetto ad un cane non di razza, mentre per i gatti sembra che avvenga il contrario. Non sono disponibili i grafici per le variabili \texttt{PrimaryBreed} e \texttt{SecondaryBreed} perché il numero elevato di possibili valori renderebbe i grafici incomprensibili.
+Come si può notare dal grafico in Figura \ref{fig-mix}, un cane di razza ha più probabilità di essere adottato rispetto ad un cane non di razza, mentre per i gatti sembra che avvenga il contrario. Non sono stati inseriti i grafici per le variabili \texttt{PrimaryBreed} e \texttt{SecondaryBreed} perché il numero elevato di possibili valori li rende incomprensibili.
 
 \subsection{Colore}
 
@@ -121,7 +121,7 @@ Come per la razza, anche per il colore le informazioni sono racchiuse nell'unica
 	\item \texttt{HasComplexColor}: valore booleano che specifica se il pelo dell'animale ha più colori o un certo pattern particolare.
 \end{itemize}
 
-Sarebbe poi necessario andare a normalizzare i valori dei colori, dato che ci sono più livello che indicano lo stesso colore, come \textit{Orange} e \textit{Apricot} (albicocca), ma da una prima analisi grafica (Fig \ref{fig-color}) sembra che fissato il tipo di animale, le informazioni sul pelo non influiscano sull'esito e in quei pochi casi che questo succede può essere dovuto al fatto che si hanno troppe poche osservazioni con quel determinato colore.
+Sarebbe poi necessario andare a normalizzare i valori dei colori, dato che ci sono più livelli che indicano lo stesso colore, come \textit{Orange} e \textit{Apricot} (albicocca), ma da una prima analisi grafica (Figura \ref{fig-colors}) sembra che, fissato il tipo di animale, le informazioni sul colore non influiscano sull'esito e in quei pochi casi che questo succede può essere dovuto al fatto che si hanno troppe poche osservazioni con quel determinato colore.
 
 \begin{figure}[!ht]
 	\centering
@@ -146,7 +146,7 @@ Sarebbe poi necessario andare a normalizzare i valori dei colori, dato che ci so
 
 \subsection{Riassunto delle trasformazioni}
 
-Dopo aver applicato le trasformazioni precedentemente descritte ed aver eliminato le variabili \texttt{AnimalID} e \texttt{OutcomeSubtype} il dataset ha assunto la seguente struttura:
+Dopo aver applicato le trasformazioni precedentemente descritte ed aver eliminato le variabili \texttt{AnimalID} e \texttt{OutcomeSubtype}, il dataset ha assunto la seguente struttura:
 
 \begin{verbatim}
 'data.frame':	26711 obs. of  15 variables:

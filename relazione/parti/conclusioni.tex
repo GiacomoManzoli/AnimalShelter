@@ -1,0 +1,44 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = rel_datamining.tex
+% !TEX spellcheck = it-IT
+
+\section{Conclusioni}
+
+\subsection{Riepilogo}
+
+I risultati ottenuti dai vari modelli sono riportati in Tabella \ref{tab-riepilogo} e come si può notare, il modello migliore che ha ottenuto un errore minore è quello delle random forest, anche se il punteggio che ha ottenuto su Kaggle è quello peggiore.
+Il miglior modello secondo Kaggle è il GAM, che sulla classifica provvisoria del sito si trova in posizione 480 su 876.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		Modello & Variante & \begin{tabular}[c]{@{}c@{}}Errore di\\ classificazione (\%)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Punteggio su\\ Kaggle\end{tabular} \\ \hline
+		\multirow{2}{*}{GLM}& \texttt{multinom} & 33.66 & 0.89358 \\ \cline{2-4}
+		& \texttt{glm} & 39.86 & 0.87527 \\ \hline
+		MARS & - & 36.40 & 0.90010 \\ \hline
+		GAM & - & 34.04 & 0.87405 \\ \hline
+		Albero & - & 35.43 & 0.87657 \\ \hline
+		\begin{tabular}[c]{@{}c@{}}Random\\ Forest\end{tabular} & - & 18.63 & 2.1834 \\ \hline
+		Rete neurale & - & 29.31 & 0.93989 \\ \hline
+		Boosting & - & 32.61 & 0.88321 \\ \hline
+	\end{tabular}
+	\caption{Riepilogo dei risultati ottenuti con i vari modelli.}
+	\label{tab-riepilogo}
+\end{table}
+
+\subsection{Considerazioni aggiuntive}
+
+\begin{itemize}
+	\item L'estrazione delle informazioni del dataset si è basata su considerazioni generali e su alcune semplici ricerche, risulta quindi limitata, specialmente per quanto riguarda la razza degli animali e il colore del pelo. \`E infatti ragionevole pensare che ci siano razze più rare, che possono venire adottate più facilmente rispetto ad altre e che certe combinazioni di colori siano più popolari rispetto ad altre, oppure che la razza influisca sulle dimensioni e sul carattere dell'animale, fattori che possono essere importanti per decidere se adottare o meno un animale. 
+
+	\item Il dataset contiene poche osservazioni classificate come \textit{Died} ($0.73\%$), potrebbe essere conveniente calcolare un modello dedicato a predirre questa classe, utilizzando una porzione più bilanciata del dataset.
+	
+	\item Per la regressione logistica e per il GAM sarebbe necessario effettuare una selezione \textit{stepwise} delle variabili più significative in modo da ottenere un modello migliore. Tuttavia, per motivi di tempo e dato che la selezione \textit{stepwise} sarebbe stata necessaria per ognuno dei modelli binomiali, questa non è stata effettuata.
+	
+	\item Per come sono definiti gli alberi su R, non è stato possibile utilizzare le variabili \texttt{PrimaryBreed} e \texttt{SecondaryBreed} nel calcolo del modello. Uno modo per includerle potrebbe essere quello di scomporre le variabili in ulteriori variabili, ognuna con meno di 32 possibili valori. Questa suddivisione non è stata effettuata perché ritenuta poco utile.
+	
+	\item Quando non è stato possibile trovare un classificatore multiclasse sono stati combinati più classificatori binomiali secondo la strategia \textit{one-vs-all}. 
+	Un'alternativa, che non è stata provata, è quella di utilizzare la strategia \textit{one-vs-one} che si basa su un numero più elevato di classificatori, ognuno dei quali deve scegliere tra due possibili classi anziché scegliere se un'osservazione è di una determinata classe o meno.
+\end{itemize}

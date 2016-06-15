@@ -4,6 +4,8 @@ if (!exists("test") || !exists("train") || !exists("validation")) {
     source("../load.R")
 }
 
+print("--- AdaBoosting ---")
+
 # Splitto la variabili con K classi in k variabili binomiali
 
 trainAlt = rbind(train,test)
@@ -32,6 +34,8 @@ datasetAlt[,16] = as.factor(datasetAlt[,16])
 datasetAlt[,17] = as.factor(datasetAlt[,17]) 
 datasetAlt[,18] = as.factor(datasetAlt[,18]) 
 datasetAlt[,19] = as.factor(datasetAlt[,19])
+
+print("Definisco le formule...")
 
 f1 = as.formula(paste("OutAdoption ~", paste(names(train)[-c(1)], collapse="+"), collapse=NULL)) # Uso i nomi di train così esclude le nuove colonne
 f2 = as.formula(paste("OutDied ~", paste(names(train)[-c(1)], collapse="+"), collapse=NULL))
@@ -87,6 +91,14 @@ for (i in 1:length(boost.predictions.comparsion.probs.1)) {
     boost.predictions.comparsion.class[i] = fclass
 }
 boost.predictions.comparsion.class = as.factor(boost.predictions.comparsion.class)
+
+# Matrici di confusione per i singoli modelli
+mat1 = misc.conf.matrix(boost.predictions.comparsion.probs.1 > 0.5, validation$OutcomeType=="Adoption")
+mat2 = misc.conf.matrix(boost.predictions.comparsion.probs.2 > 0.5, validation$OutcomeType=="Died")
+mat3 = misc.conf.matrix(boost.predictions.comparsion.probs.3 > 0.5, validation$OutcomeType=="Euthanasia")
+mat4 = misc.conf.matrix(boost.predictions.comparsion.probs.4 > 0.5, validation$OutcomeType=="Return_to_owner")
+mat5 = misc.conf.matrix(boost.predictions.comparsion.probs.5 > 0.5, validation$OutcomeType=="Transfer")
+
 
 # Predizione delle probabilità per la sfida di kaggle (sul dataset separato)
 print("Predizione sul modello completo...")
