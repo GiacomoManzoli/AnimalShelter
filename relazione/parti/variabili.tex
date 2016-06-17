@@ -25,7 +25,7 @@ Tracciando il grafico (Figura \ref{fig-has-name}) per visualizzare la ripartizio
 
 Difficilmente la data in cui l'animale ha lasciato la struttura può tornare utile per effettuare previsioni future. Si possono però estrarre altre informazioni come la fascia oraria e il giorno della settimana in cui l'animale ha lasciato la struttura. 
 
-Queste due informazioni possono tornare utili perché, ad esempio la gente nei week.end ha più tempo libero e quindi è più probabile che vada ad adottare un animale, oppure che per motivi logistici i trasferimenti possono essere fatti solamente la mattina.
+Queste due informazioni possono tornare utili perché, ad esempio la gente nei week-end ha più tempo libero e quindi è più probabile che vada ad adottare un animale, oppure che per motivi logistici i trasferimenti possono essere fatti solamente la mattina.
 
 Per estrapolare ciò vengono definite due nuove variabili \texttt{DayOfWeek} che assume come valore il giorno della settimana e \texttt{TimeOfDay} che può assumere come valori:
 
@@ -36,7 +36,7 @@ Per estrapolare ciò vengono definite due nuove variabili \texttt{DayOfWeek} che
 	\item \textit{Notte}: per le restanti ore.
 \end{itemize}
 
-Come si può notare dal grafico (Figura \ref{fig-time}) c'è un picco sulle adozioni nella fascia serale. Sempre dal grafico si può notare che la notte sono più frequenti i trasferimenti, anche se la maggior parte di questi si viene svolta durante le ore diurne.
+Come si può notare dal grafico (Figura \ref{fig-time}) c'è un picco sulle adozioni nella fascia serale. Sempre dal grafico si può notare che la notte sono più frequenti i trasferimenti, anche se la maggior parte di questi si viene svolta durante le ore diurne, questo perché l'attività notturna del rifugio è molto limitata (423 osservazioni).
 
 \begin{figure}[htbp]
 	\centering
@@ -54,11 +54,11 @@ Per quanto riguarda il giorno della settimana, dal grafico Figura \ref{fig-dow},
 
 \subsection{Sesso e stato dell'animale}
 
-La variabile \texttt{SexuponOutcome} prevede 6 possibili livelli che racchiudo l'informazione relativa al sesso e al fatto se l'animale è stato castrato o meno. C'è poi un livello \textit{Unknown} per gli animali per i quali non si hanno informazioni e in più ci sono dei valori non disponibili.
+La variabile \texttt{SexuponOutcome} prevede 6 possibili livelli che racchiudo l'informazione relativa al sesso e al fatto se l'animale è stato sterilizzato o meno. C'è poi un livello \textit{Unknown} per gli animali per i quali non si hanno informazioni e in più ci sono dei valori \texttt{NA}.
 
-Questa variabile è stata quindi scomposta in \texttt{Gender} che specifica il sesso dell'animale e \texttt{Status}, che specifica se l'animale è stato castrato o meno. Entrambe le variabili hanno un terzo possibile valore \textit{Unknown} che rappresenta i dati non disponibili.
+Questa variabile è stata quindi scomposta in \texttt{Gender} che specifica il sesso dell'animale e \texttt{Status}, che specifica se l'animale è stato sterilizzato o meno. Entrambe le variabili hanno un terzo possibile valore \textit{Unknown} che rappresenta la mancanza di informazioni.
 
-Dal grafico riportato in Fig \ref{fig-sesso-stato} si può notare che indipendentemente dal sesso e dal tipo di animale, se l'animale è stato castrato è più probabile che venga adottato. Se invece non è stato castrato oppure non ci sono informazioni a riguardo, è più probabile che venga trasferito.
+Dal grafico riportato in Figura \ref{fig-sesso-stato} si può notare che indipendentemente dal sesso e dal tipo di animale, se l'animale è stato sterilizzato è più probabile che venga adottato. Se invece non è stato sterilizzato oppure non ci sono informazioni a riguardo, è più probabile che venga trasferito.
 
 \begin{figure}[htbp]
 	\centering
@@ -97,7 +97,7 @@ Come si può notare dal grafico Figura \ref{fig-eta}, nessuno degli animali neon
 
 Le informazioni relative alla razza dell'animale sono racchiuse nella variabile \texttt{Breed}, la quale ha 1340 possibili valori e specifica anche se l'animale è un incrocio o meno.
 
-Osservando alcuni dei possibili valori, si può notare che se l'animale non è di razza, il valore della variabile comprende o due razze oppure la razza principale, seguita da \textit{Mix}. Si è scelto quindi di scomporre la variabile \texttt{Breed} nelle variabili \texttt{PrimaryBreed} (220 livelli), \texttt{SecondaryBreed} (144 livelli) e \texttt{IsMix} (booleana).
+Osservando alcuni dei possibili valori, si può notare che se l'animale non è di razza, il valore della variabile comprende o due razze oppure la razza principale seguita da \textit{Mix}. Si è scelto quindi di scomporre la variabile \texttt{Breed} nelle variabili \texttt{PrimaryBreed} (220 livelli), \texttt{SecondaryBreed} (144 livelli) e \texttt{IsMix} (booleana).
 
 Ci sarebbero ulteriori informazioni che possono essere estratte da questa variabile, come la stazza dell'animale, la quale a sua volta va ad influire sull'aspettativa di vita e quindi sulla corretta classificazione della fascia d'età e sul carattere dell'animale. Tuttavia per estrarre queste informazioni in modo corretto è necessaria un'elevata conoscenza del dominio, ci si è quindi limitati alla scomposizione della variabile \texttt{Breed}.
 
@@ -121,7 +121,7 @@ Come per la razza, anche per il colore le informazioni sono racchiuse nell'unica
 	\item \texttt{HasComplexColor}: valore booleano che specifica se il pelo dell'animale ha più colori o un certo pattern particolare.
 \end{itemize}
 
-Sarebbe poi necessario andare a normalizzare i valori dei colori, dato che ci sono più livelli che indicano lo stesso colore, come \textit{Orange} e \textit{Apricot} (albicocca), ma da una prima analisi grafica (Figura \ref{fig-colors}) sembra che, fissato il tipo di animale, le informazioni sul colore non influiscano sull'esito e in quei pochi casi che questo succede può essere dovuto al fatto che si hanno troppe poche osservazioni con quel determinato colore.
+Sarebbe poi necessario andare a normalizzare i valori dei colori, dato che ci sono più livelli che indicano lo stesso colore, come \textit{Orange} e \textit{Apricot} (albicocca), ma da una prima analisi grafica (Figura \ref{fig-colors}) sembra che, stabilito il tipo di animale, le informazioni sul colore non influiscano sull'esito e in quei pochi casi che questo succede può essere dovuto al fatto che si hanno troppe poche osservazioni con quel determinato colore.
 
 \begin{figure}[!ht]
 	\centering

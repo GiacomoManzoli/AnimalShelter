@@ -268,7 +268,7 @@ Per calcolare l'albero di classificazione è stato utilizzato il modello disponi
 L'albero è stato costruito utilizzando le osservazioni presenti nel \textit{train set}, espandendolo fino ad ottenere una devianza interna alle foglie minore di $0.002$ (\texttt{mindev=0.002}). 
 Dopodiché sono stati usati i dati del \textit{test set} per potare l'albero in modo da limitare l'overfitting, ottenendo come albero migliore quello con 21 foglie.
 
-L'albero così prodotto ha ottenuto un errore di classificazione del $35.43\%$, ovvero leggermente peggiore rispetto alla regressione logistica,
+L'albero così prodotto ha ottenuto un errore di classificazione del $35.43\%$, ovvero leggermente peggiore rispetto alla regressione logistica.
 
 La Tabella \ref{tab-tree} riporta gli errori di classificazione commessi dal modello, per i quali valgono le stesse considerazioni fatte per la regressione logistica, alle quali si aggiunge il fatto che anche la classe \textit{Euthanasia} non viene mai assegnata.
 
@@ -299,7 +299,7 @@ Un miglioramento al modello degli alberi di classificazione è dato dal modello 
 
 Trattandosi di una combinazione di alberi di classificazione, anche questo modello soffre del problema relativo alle variabili \texttt{PrimaryBreed} e \texttt{SecondaryBreed}, le quali sono state scartate dal dataset.
 
-I parametri del modello che si sono rivelati essere migliori sono \text{mtry} uguale a 12 e \texttt{ntree} uguale a 600, ovvero la configurazione migliore della foresta ha 600 alberi di classificazione, addestrati su un set ridotti di osservazioni utilizzando tutte e 12 le variabili a disposizione. Infatti, il parametro \texttt{mtry} specifica il numero di variabili da scegliere a caso tra quelle disponibili quando viene estratto un campione per calcolare un singolo albero.
+I parametri del modello che si sono rivelati essere migliori sono \texttt{mtry} uguale a 12 e \texttt{ntree} uguale a 600, ovvero la configurazione migliore della foresta ha 600 alberi di classificazione, addestrati su un set ridotto delle osservazioni e utilizzando tutte e 12 le variabili a disposizione. Infatti, il parametro \texttt{mtry} specifica il numero di variabili da scegliere a caso tra quelle disponibili quando viene estratto un campione per calcolare un singolo albero.
 Gli altri valori provati per \texttt{mtry} sono stati 5 e 10, ma hanno prodotto risultati peggiori.
 
 Con questa configurazione, il modello ha ottenuto un errore di classificazione del $18.63\%$ sul set di validazione, tuttavia il punteggio calcolato da Kaggle risulta essere $2.1834$.

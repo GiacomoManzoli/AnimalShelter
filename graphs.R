@@ -6,7 +6,7 @@ outcomesByAnimal = function() {
     outcomes <- dataset[,] %>% 
         group_by(AnimalType, OutcomeType) %>% 
         summarise(tot = n())
-
+        
     ggplot(outcomes, aes(x = AnimalType, y = tot, fill = OutcomeType)) +
         geom_bar(stat = "identity", position = "fill") +
         labs(y = "Proporzioni",  x = "Animale",title = "Esito in base al tipo di animale", fill="Esito")

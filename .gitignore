@@ -6,3 +6,4 @@ lift-roc-tab.r
 *.log
 *.loa
 *.synctex.gz
+.Rapp.history
