@@ -7,13 +7,25 @@
 
 Il dataset si presenta con poche variabili che riassumono molte informazioni o che hanno un numero molto elevato di livelli. \`E quindi necessario andare ad estrapolare le informazioni da queste variabili, creandone di nuove e di più semplici.
 
+\subsection{Il tipo di animale}
+
+Prima di iniziare a ragionare sulle variabili più complesse, ci si può chiedere se il fatto che l'animale sia un cane o un gatto influisca sul suo destino.
+
+Tracciando il grafico con le proporzioni delle varie classi in base al tipo di animale (Figura \ref{fig-animals}) è possibile osservare che c'è una certa differenza, non tanto per le adozioni, ma riguardo le altre classi: per i cani è più probabile che siano recuperati dai propri padroni rispetto ai gatti, mentre per i gatti è più probabile che vengano trasferiti.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.4\textwidth]{./grafici/esito_animal.pdf}
+	\caption{Esito in base al tipo di animale}\label{fig-animals}
+	\end{figure}
+
 \subsection{Il nome dell'animale}
 
 La variabile \texttt{Name} ha più di 6000 possibili valori distinti e, ragionando a livello di previsione, sembra poco probabile che il nome dell'animale influisca sul suo destino. Tuttavia ci sono 7691 animali che non hanno un nome, questo probabilmente implica che si tratta di animali randagi che sono stati portati al rifugio\footnote{Non vengono fornite informazioni a riguardo} e quindi può essere meno probabile che il padrone li venga a recuperare. Analogamente se è stato trovato un'animale smarrito e con una targhetta con il nome al collo, è più probabile che il suo padrone vada a recuperarlo.
 
 Il nome può quindi essere riassunto da una nuova variabile booleana \texttt{HasName} che specifica se l'animale ha un nome o meno.
 
-Tracciando il grafico (Figura \ref{fig-has-name}) per visualizzare la ripartizione delle varie classi per la variabile risposta in base al valore di \texttt{HasName} si ha che le osservazioni fatte sembrano essere confermate dai dati: indipendentemente dal tipo di animale, se questo ha un nome è più probabile che venga recuperato dal suo padrone. Inoltre, si può notare anche che per i gatti, la probabilità di essere adottati è molto più alta se hanno un nome.
+Tracciando il grafico (Figura \ref{fig-has-name}) della ripartizione delle varie classi per la variabile risposta in base al valore di \texttt{HasName}, si ha che le osservazioni fatte sembrano essere confermate dai dati: indipendentemente dal tipo di animale, se questo ha un nome è più probabile che venga recuperato dal suo padrone. Inoltre, si può notare anche che per i gatti, la probabilità di essere adottati è molto più alta se hanno un nome.
 
 \begin{figure}[htbp]
 	\centering
@@ -25,7 +37,7 @@ Tracciando il grafico (Figura \ref{fig-has-name}) per visualizzare la ripartizio
 
 Difficilmente la data in cui l'animale ha lasciato la struttura può tornare utile per effettuare previsioni future. Si possono però estrarre altre informazioni come la fascia oraria e il giorno della settimana in cui l'animale ha lasciato la struttura. 
 
-Queste due informazioni possono tornare utili perché, ad esempio la gente nei week-end ha più tempo libero e quindi è più probabile che vada ad adottare un animale, oppure che per motivi logistici i trasferimenti possono essere fatti solamente la mattina.
+Queste due informazioni possono tornare utili perché, ad esempio la gente nei week-end ha più tempo libero e quindi è più probabile che vada ad adottare un animale, oppure che per motivi logistici i trasferimenti possono essere fatti solamente in una determinata fascia oraria.
 
 Per estrapolare ciò vengono definite due nuove variabili \texttt{DayOfWeek} che assume come valore il giorno della settimana e \texttt{TimeOfDay} che può assumere come valori:
 
@@ -36,7 +48,7 @@ Per estrapolare ciò vengono definite due nuove variabili \texttt{DayOfWeek} che
 	\item \textit{Notte}: per le restanti ore.
 \end{itemize}
 
-Come si può notare dal grafico (Figura \ref{fig-time}) c'è un picco sulle adozioni nella fascia serale. Sempre dal grafico si può notare che la notte sono più frequenti i trasferimenti, anche se la maggior parte di questi si viene svolta durante le ore diurne, questo perché l'attività notturna del rifugio è molto limitata (423 osservazioni).
+Come si può notare dal grafico (Figura \ref{fig-time}) c'è un picco sulle adozioni nella fascia serale. Sempre dal grafico si può notare che la notte sono più frequenti i trasferimenti, anche se la maggior parte di questi viene svolta durante le ore diurne, infatti, l'attività notturna del rifugio è molto limitata (423 osservazioni).
 
 \begin{figure}[htbp]
 	\centering
@@ -56,7 +68,7 @@ Per quanto riguarda il giorno della settimana, dal grafico Figura \ref{fig-dow},
 
 La variabile \texttt{SexuponOutcome} prevede 6 possibili livelli che racchiudo l'informazione relativa al sesso e al fatto se l'animale è stato sterilizzato o meno. C'è poi un livello \textit{Unknown} per gli animali per i quali non si hanno informazioni e in più ci sono dei valori \texttt{NA}.
 
-Questa variabile è stata quindi scomposta in \texttt{Gender} che specifica il sesso dell'animale e \texttt{Status}, che specifica se l'animale è stato sterilizzato o meno. Entrambe le variabili hanno un terzo possibile valore \textit{Unknown} che rappresenta la mancanza di informazioni.
+Questa variabile è stata quindi scomposta in \texttt{Gender}, che specifica il sesso dell'animale, e \texttt{Status}, che specifica se l'animale è stato sterilizzato o meno. Entrambe le variabili hanno un terzo possibile valore \textit{Unknown} che rappresenta la mancanza di informazioni.
 
 Dal grafico riportato in Figura \ref{fig-sesso-stato} si può notare che indipendentemente dal sesso e dal tipo di animale, se l'animale è stato sterilizzato è più probabile che venga adottato. Se invece non è stato sterilizzato oppure non ci sono informazioni a riguardo, è più probabile che venga trasferito.
 
@@ -68,7 +80,7 @@ Dal grafico riportato in Figura \ref{fig-sesso-stato} si può notare che indipen
 
 \subsection{L'età dell'animale}
 
-L'età dell'animale è memorizzata nella variabile \texttt{AgeuponOutcome} in un formato molto confusionale in quanto viene espressa come \textit{2 anni}, \textit{3 mesi}, ecc. Inoltre ci sono dei casi in cui alcuni valori non hanno la \textit{s} del plurale, ovvero tra i possibili valori della variabile ci sono ad esempio \textit{1 week} e \textit{1 weeks}, che quindi vengono considerati come valori distinti quando in realtà non lo sono.
+L'età dell'animale è memorizzata nella variabile \texttt{AgeuponOutcome} in un formato molto confusionale in quanto viene espressa come \textit{2 anni}, \textit{3 mesi}, ecc. Inoltre, ci sono dei casi in cui alcuni valori non hanno la \textit{s} del plurale, ovvero tra i possibili valori della variabile ci sono, ad esempio, \textit{1 week} e \textit{1 weeks} e che quindi vengono considerati come valori distinti quando in realtà non lo sono.
 
 La prima modifica è quindi quella di normalizzare i valori, esprimendoli con un numero intero che approssima l'età dell'animale espressa in giorni. Così facendo risulta più semplice classificare gli animali per fascia d'età. Infatti, si può assumere che un cucciolo è più probabile che venga adottato rispetto ad un animale più anziano, mentre gli animali troppo piccoli non possono essere adottati per legge.
 
@@ -121,7 +133,7 @@ Come per la razza, anche per il colore le informazioni sono racchiuse nell'unica
 	\item \texttt{HasComplexColor}: valore booleano che specifica se il pelo dell'animale ha più colori o un certo pattern particolare.
 \end{itemize}
 
-Sarebbe poi necessario andare a normalizzare i valori dei colori, dato che ci sono più livelli che indicano lo stesso colore, come \textit{Orange} e \textit{Apricot} (albicocca), ma da una prima analisi grafica (Figura \ref{fig-colors}) sembra che, stabilito il tipo di animale, le informazioni sul colore non influiscano sull'esito e in quei pochi casi che questo succede può essere dovuto al fatto che si hanno troppe poche osservazioni con quel determinato colore.
+Sarebbe poi necessario andare a normalizzare i valori dei colori, dato che ci sono più livelli che indicano lo stesso colore, come \textit{Orange} e \textit{Apricot} (albicocca), ma da una prima analisi grafica (Figura \ref{fig-colors}) sembra che, stabilito il tipo di animale, le informazioni sul colore non influiscano sull'esito e, in quei pochi casi che questo succede, può essere dovuto al fatto che si hanno troppe poche osservazioni con quel determinato colore.
 
 \begin{figure}[!ht]
 	\centering

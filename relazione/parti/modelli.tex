@@ -22,7 +22,7 @@ Per calcolare e confrontare i modelli, le 26000 osservazioni sono state suddivis
 
 Le osservazioni di quest'ultimo set sono poi state suddivise in altri due sottoinsiemi, il \textit{test set} contenete il 20\% e il \textit{train set} contenente le restanti osservazioni. 
 
-Con questa suddivisione è possibile utilizzare il \textit{train set} per calcolare il modello, provando più valori per gli eventuali iper-parametri, il \textit{test set} per confrontare quale configurazione di iper-parametri funziona meglio ed infine combinare i due set per calcolare la versione del modello da confrontare con gli altri modelli sui dati del \textit{validation set}.
+Con questa suddivisione è possibile utilizzare il \textit{train set} per calcolare il modello, provando più valori per gli eventuali iper-parametri, il \textit{test set} per stabilire quale configurazione di iper-parametri funziona meglio ed infine combinare i due set per calcolare la versione del modello da confrontare con gli altri modelli sui dati del \textit{validation set}.
 
 Infine, una volta trovata la configurazione ottimale di ogni modello, questo viene ricalcolato anche sulla totalità delle osservazioni per poi essere utilizzato per effettuare le previsioni sul dataset secondario in modo da poterle caricare su Kaggle, ottenendo così un'ulteriore metrica per la valutazione della bontà del modello. 
 
@@ -34,7 +34,7 @@ Per quanto riguarda le librerie contenenti le implementazioni dei vari modelli, 
 
 Il primo modello utilizzato è stato quello che effettua la regressione logistica multiclasse. Tra le varie implementazioni della regressione logistica disponibili per R si è scelto di utilizzare \texttt{multinom} presente nel pacchetto \texttt{nnet}, la quale simula una regressione logistica utilizzando una rete neurale. 
 
-\`E stata scelta questa particolare implementazione perché la funzione \texttt{glm} utilizzata in laboratorio funziona solo per la regressione binomiale e la funzione \texttt{mlogit} dell'omonimo pacchetto si è rilevata eccessivamente complessa.
+\`E stata scelta questa particolare implementazione perché la funzione \texttt{glm} utilizzata in laboratorio funziona solo per la regressione binomiale e la funzione \texttt{mlogit} dell'omonimo pacchetto si è rilevata eccessivamente complessa. Si è comunque provato ad utilizzare \texttt{glm} combinando più modelli in modalità \textit{one-vs-all} (§\ref{sec-glm-glm}).
 
 Il modello calcolato da \texttt{multinom} prevede, tra i vari iper-parametri, il valore di \texttt{decay} e confrontando l'effetto dei vari valori sul \textit{test set}, si è trovato come valore migliore $0.001$, il quale è stato utilizzato per calcolare il modello di regressione sulla versione combinata del \textit{test} e \textit{train set}, producendo un errore sul test di classificazione pari a $0.3365762$, ovvero circa del $33.66\%$.
 
